@@ -38,9 +38,6 @@ private:
   typedef MapInformationFactor This;
   typedef gtsam::NoiseModelFactor1<Pose> Base;
 
-  // trajectory cost settings
-  double coefficient_;      // decreasing coefficient along trajectory
-
   // arm: planar one, all alpha = 0
   const Robot& robot_;
 
@@ -63,9 +60,9 @@ public:
    * @param nn_index   nearest neighbour index of grid map
    */
   MapInformationFactor(gtsam::Key poseKey, const Robot& robot,
-      const GridMap& grid_map, double cost_sigma, double coefficient) :
+      const GridMap& grid_map, double cost_sigma) :
         Base(gtsam::noiseModel::Isotropic::Sigma(robot.nr_body_spheres(), cost_sigma), poseKey),
-        coefficient_(coefficient), robot_(robot), grid_map_(grid_map) {
+        robot_(robot), grid_map_(grid_map) {
 
      // TODO: check robot is plannar
   }

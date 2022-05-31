@@ -14,12 +14,14 @@ if __name__ == '__main__':
     map_config = MapConfig(
         cols=100, rows=75, origin_x=-20, origin_y=-10, cell_size=0.4)
     noise_config = NoiseConfig(
-        QC=np.identity(2), obstacle_sigma=0.08, prior_sigma=0.001,
-        initial_sigma=0.0000001, epsilon_dist=3.0)
+        QC=np.identity(2), obstacle_sigma=0.1, information_sigma=100.00,
+        prior_sigma=0.001, initial_sigma=0.0000001, epsilon_dist=1.0,
+        gamma=2.0)
     trajectory_config = TrajectoryConfig(
-        start_position=np.asarray([0, 0]), end_position=np.asarray([17, 14]), delay=4,
+        start_position=np.asarray([-10, -5]), end_position=np.asarray([17, 14]), delay=4,
         total_time_second=10.0, total_time_step=100, total_check_step=50.0)
-    optimization_config = OptimizationConfig(use_GP_inter=True, use_trustregion_opt=True)
+    optimization_config = OptimizationConfig(
+        use_GP_inter=True, use_trustregion_opt=True, use_information_factor=True)
 
     dataset_ground_truth = generate2Ddataset("GroundTruth", map_config)
     dataset = generate2Ddataset("Empty", map_config)

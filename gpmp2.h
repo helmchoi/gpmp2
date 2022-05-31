@@ -711,7 +711,7 @@ class GridMap {
 virtual class MapInformationFactorPointRobot : gtsam::NoiseModelFactor {
   MapInformationFactorPointRobot(
       size_t posekey, const gpmp2::PointRobotModel& pR,
-      const gpmp2::GridMap& grid_map, double cost_sigma, double coefficient);
+      const gpmp2::GridMap& grid_map, double cost_sigma);
   Vector evaluateError(Vector pose) const;
 };
 

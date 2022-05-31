@@ -30,13 +30,16 @@ class MapConfig:
     self.cell_size = cell_size
 
 class NoiseConfig:
-  def __init__(self, QC, obstacle_sigma, prior_sigma, initial_sigma, epsilon_dist):
+  def __init__(self, QC, obstacle_sigma, information_sigma, prior_sigma, 
+    initial_sigma, epsilon_dist, gamma):
     self.Qc_model = noiseModel_Gaussian.Covariance(QC)
     self.obstacle_sigma = obstacle_sigma # cost_sigma
+    self.information_sigma = information_sigma
     self.epsilon_dist = epsilon_dist
     self.pose_fix = noiseModel_Isotropic.Sigma(2, prior_sigma)
     self.vel_fix = noiseModel_Isotropic.Sigma(2, prior_sigma)
     self.initial_fix = noiseModel_Isotropic.Sigma(2, initial_sigma)
+    self.gamma = gamma
 
 class TrajectoryConfig:
   def __init__(self, start_position, end_position, delay, 
@@ -54,9 +57,10 @@ class TrajectoryConfig:
     self.dt = total_time_second / float(total_time_step)
 
 class OptimizationConfig:
-  def __init__(self, use_GP_inter, use_trustregion_opt):
+  def __init__(self, use_GP_inter, use_trustregion_opt, use_information_factor):
     self.use_GP_inter = use_GP_inter
     self.use_trustregion_opt = use_trustregion_opt
+    self.use_information_factor = use_information_factor
 
 class TrajectoryType:
   def __init__(self, position_array, velocity_array):

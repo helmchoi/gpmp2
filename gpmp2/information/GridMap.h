@@ -55,6 +55,13 @@ public:
     return updated_information(pidx);
   }
 
+  inline double getUpdatedInformation(const gtsam::Point2& point, gtsam::Vector2& g) const {
+    const float_index pidx = convertPoint2toCell(point);
+    const gtsam::Vector2 g_idx = gradient(pidx);
+    g = gtsam::Vector2(g_idx(1), g_idx(0)) / cell_size_;
+    return updated_information(pidx);
+  }
+
   inline float_index convertPoint2toCell(const gtsam::Point2& point) const {
     // check point range
     if (point.x() < origin_.x() || point.x() > (origin_.x() + (map_cols_-1.0)*cell_size_) ||
@@ -72,6 +79,23 @@ public:
     return origin_ + gtsam::Point2(
         cell.get<1>() * cell_size_,
         cell.get<0>() * cell_size_);
+  }
+
+  inline gtsam::Vector2 gradient(const float_index& idx) const {
+    const float lr = floor(idx.get<0>()) - 1.0, lc = floor(idx.get<1>()) - 1.0;
+    const float hr = lr + 1.0, hc = lc + 1.0;
+    const float_index hrlc(hr, lc);
+    const float_index lrlc(lr, lc);
+    const float_index lrhc(lr, hc);
+    const float_index hrhc(hr, hc);
+    const size_t lri = static_cast<size_t>(lr), lci = static_cast<size_t>(lc),
+        hri = static_cast<size_t>(hr), hci = static_cast<size_t>(hc);
+    return gtsam::Vector2(
+        (hc-idx.get<1>()) * (updated_information(hrlc)-updated_information(lrlc)) +
+        (idx.get<1>()-lc) * (updated_information(hrhc)-updated_information(lrhc)),
+
+        (hr-idx.get<0>()) * (updated_information(lrhc)-updated_information(lrlc)) +
+        (idx.get<0>()-lr) * (updated_information(hrhc)-updated_information(hrlc)));
   }
 
 

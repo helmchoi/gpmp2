@@ -1,5 +1,6 @@
 import numpy as np
 import time
+import math
 import matplotlib.patches as patches
 from copy import deepcopy
 
@@ -24,6 +25,7 @@ def inference(previous_trajectory, map_config, noise_config, trajectory_config,
   origin_point2 = Point2(map_config.origin_x, map_config.origin_y)
   field = signedDistanceField2D(dataset.map, map_config.cell_size)
   sdf = PlanarSDF(origin_point2, map_config.cell_size, field)
+  grid_map = GridMap(origin_point2, map_config.cell_size, dataset.map)
 
   delta_t = time_sec / time_step
   
@@ -70,6 +72,12 @@ def inference(previous_trajectory, map_config, noise_config, trajectory_config,
       graph.push_back(
         ObstaclePlanarSDFFactorPointRobot(
           key_pos, pr_model, sdf, noise_config.obstacle_sigma, noise_config.epsilon_dist))
+
+      if (optimization_config.use_information_factor):
+        coeff = math.pow(noise_config.gamma, i - 1)
+        temp = MapInformationFactorPointRobot(
+          key_pos, pr_model, grid_map, noise_config.information_sigma * coeff)
+        graph.add(temp)
 
       if optimization_config.use_GP_inter and check_inter > 0:
         for j in range(1, check_inter + 1):
