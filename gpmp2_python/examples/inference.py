@@ -21,7 +21,7 @@ def inference(previous_trajectory, map_config, noise_config, trajectory_config,
     dataset.map, dataset_ground_truth.map, cell_size=map_config.cell_size, 
     lidar_range=10.0)
 
-  origin_point2 = Point2(map_config.origin_x, map_config.origin_x)
+  origin_point2 = Point2(map_config.origin_x, map_config.origin_y)
   field = signedDistanceField2D(dataset.map, map_config.cell_size)
   sdf = PlanarSDF(origin_point2, map_config.cell_size, field)
 
