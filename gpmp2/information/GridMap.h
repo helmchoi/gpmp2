@@ -77,7 +77,7 @@ public:
 
   inline double updated_information(const float_index& idx) const {
     const size_t n = 100;
-    const double range = 1.0;
+    const double range = 10.0;
     const double dtheta = 2.0 * M_PI / float(n);
     const double stride = cell_size_ * 0.9;
     const size_t n_d = size_t(range / stride);
