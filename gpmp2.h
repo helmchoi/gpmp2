@@ -692,6 +692,30 @@ virtual class SelfCollisionArm : gtsam::NoiseModelFactor {
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+// information
+////////////////////////////////////////////////////////////////////////////////
+
+// grid map class
+
+#include <gpmp2/information/GridMap.h>
+
+class GridMap {  
+  GridMap(const gtsam::Point2& origin, double cell_size, const Matrix& data);
+  // access
+  double getUpdatedInformation(const gtsam::Point2& point) const;
+  void print(string s) const;
+};
+
+// planar obstacle avoid factor for Point Robot
+#include <gpmp2/information/MapInformationFactorPointRobot.h>
+virtual class MapInformationFactorPointRobot : gtsam::NoiseModelFactor {
+  MapInformationFactorPointRobot(
+      size_t posekey, const gpmp2::PointRobotModel& pR,
+      const gpmp2::GridMap& grid_map, double cost_sigma, double coefficient);
+  Vector evaluateError(Vector pose) const;
+};
+
+////////////////////////////////////////////////////////////////////////////////
 // planner
 ////////////////////////////////////////////////////////////////////////////////
 

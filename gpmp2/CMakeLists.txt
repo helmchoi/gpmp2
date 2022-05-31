@@ -9,6 +9,7 @@ set(gpmp2_subdirs
     obstacle
     planner
     utils
+    information
 )
 set(gpmp2_srcs)
 
