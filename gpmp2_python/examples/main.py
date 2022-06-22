@@ -1,5 +1,6 @@
 import numpy as np
 import time
+import matplotlib   ## backend is 'TkAgg'
 import matplotlib.pyplot as plt
 
 from gtsam import *
@@ -31,6 +32,7 @@ if __name__ == '__main__':
     # trajectory_config = TrajectoryConfig(
     #     start_position=np.asarray([-10, -5]), end_position=np.asarray([12, 14]), delay=4,
     #     total_time_second=10.0, total_time_step=100, total_check_step=50.0)
+    
     optimization_config = OptimizationConfig(
         use_GP_inter=True, use_trustregion_opt=True, use_information_factor=True)
 
@@ -39,9 +41,12 @@ if __name__ == '__main__':
     
     pr_model = generatePrModel()
 
+    ## define figures & set positions
     figure_current = plt.figure(1)
+    figure_current.canvas.manager.window.wm_geometry("+%d+%d" % (0, 0))
     axis_current = figure_current.gca()
     figure_robot = plt.figure(2)
+    figure_robot.canvas.manager.window.wm_geometry("+%d+%d" % (640, 0))
     axis_robot = figure_robot.gca()
 
         
