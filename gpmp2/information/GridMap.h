@@ -99,13 +99,52 @@ public:
   }
 
 
+  // ======================================================================
+  // Computation of information cost
+  // information gain w.r.t. the current map (each timestep is independent)
+  // ======================================================================
+  //
+  // -- Calculate information cost (TK)
+//   inline double updated_information(const float_index& idx) const {
+//     const size_t n = 100;
+//     const double range = 10.0;
+//     const double dtheta = 2.0 * M_PI / float(n);
+//     const double stride = cell_size_ * 0.9;
+//     const size_t n_d = size_t(range / stride);
+//     double cost = 0.0;
+//     for (size_t i = 0; i < n ; i++){
+//       const double theta_k = dtheta * i;
+//       double y = idx.get<0>();
+//       double x = idx.get<1>();
+//       for (size_t j = 0; j < n_d; j++){
+//         x -= stride * std::sin(theta_k);
+//         y += stride * std::cos(theta_k);
+//         const size_t cell_idx_x = static_cast<size_t>(x);
+//         const size_t cell_idx_y = static_cast<size_t>(y);
+//         if(cell_idx_x < 0 || cell_idx_y < 0 || cell_idx_x > map_cols_ || cell_idx_y > map_rows_){
+//           cost += n_d - j;
+//           break;
+//         }
+//         if(data_(cell_idx_x, cell_idx_y) == 1){
+//           cost += n_d - j;
+//           break;
+//         } else if(data_(cell_idx_x, cell_idx_y) == 0){
+//           cost += 1;
+//         }
+//       }
+//     }
+//     return cost;
+//   }
+  
+  // -- Calculate information cost (HL)
   inline double updated_information(const float_index& idx) const {
     const size_t n = 100;
     const double range = 10.0;
     const double dtheta = 2.0 * M_PI / float(n);
     const double stride = cell_size_ * 0.9;
     const size_t n_d = size_t(range / stride);
-    double cost = 0.0;
+    // double cost = 0.0;
+    double cost = -0.5 * log(0.5) * M_PI * range * range;
     for (size_t i = 0; i < n ; i++){
       const double theta_k = dtheta * i;
       double y = idx.get<0>();
@@ -115,15 +154,20 @@ public:
         y += stride * std::cos(theta_k);
         const size_t cell_idx_x = static_cast<size_t>(x);
         const size_t cell_idx_y = static_cast<size_t>(y);
+        // out of the map range
         if(cell_idx_x < 0 || cell_idx_y < 0 || cell_idx_x > map_cols_ || cell_idx_y > map_rows_){
-          cost += n_d - j;
           break;
         }
+        // this cell is known to be occupied (then the farther cells are not seen) -> already known. no gain
         if(data_(cell_idx_x, cell_idx_y) == 1){
-          cost += n_d - j;
           break;
-        } else if(data_(cell_idx_x, cell_idx_y) == 0){
-          cost += 1;
+        }
+        // // this cell is known to be free -> already known. no gain
+        // else if(data_(cell_idx_x, cell_idx_y) == 0){
+        // }
+        // this cell is unknown (now it can be observed -> give info gain)
+        else if(data_(cell_idx_x, cell_idx_y) == 0.5){
+          cost += 0.5 * log(0.5);
         }
       }
     }
