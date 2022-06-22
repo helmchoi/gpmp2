@@ -41,6 +41,7 @@ def inference(previous_trajectory, map_config, noise_config, trajectory_config,
     init_values.insert(key_pos, position_at_i)
     init_values.insert(key_vel, velocity_at_i)
 
+    # START & END POSITION FACTOR
     if i == 0:
       graph.push_back(
         PriorFactorVector(key_pos, start_position, noise_config.pose_fix))
@@ -54,9 +55,10 @@ def inference(previous_trajectory, map_config, noise_config, trajectory_config,
         PriorFactorVector(key_vel, trajectory_config.end_velocity,
           noise_config.vel_fix))
 
-    graph.push_back(
-      ObstaclePlanarSDFFactorPointRobot(
-        key_pos, pr_model, sdf, noise_config.obstacle_sigma, noise_config.epsilon_dist))
+    # ?Duplicated factor?
+#     graph.push_back(
+#       ObstaclePlanarSDFFactorPointRobot(
+#         key_pos, pr_model, sdf, noise_config.obstacle_sigma, noise_config.epsilon_dist))
 
     if i > 0:
       key_pos1 = symbol(ord("x"), i - 1)
@@ -64,21 +66,25 @@ def inference(previous_trajectory, map_config, noise_config, trajectory_config,
       key_vel1 = symbol(ord("v"), i - 1)
       key_vel2 = symbol(ord("v"), i)
 
+      # GAUSSIAN PRIOR FACTOR
       temp = GaussianProcessPriorLinear(
         key_pos1, key_vel1, key_pos2, key_vel2,
         trajectory_config.dt, noise_config.Qc_model)
       graph.push_back(temp)
 
+      # COLLISION FACTOR
       graph.push_back(
         ObstaclePlanarSDFFactorPointRobot(
           key_pos, pr_model, sdf, noise_config.obstacle_sigma, noise_config.epsilon_dist))
 
+      # INFORMATION FACTOR
       if (optimization_config.use_information_factor):
         coeff = math.pow(noise_config.gamma, i - 1)
         temp = MapInformationFactorPointRobot(
           key_pos, pr_model, grid_map, noise_config.information_sigma * coeff)
         graph.add(temp)
 
+      # INTERPOLATION COLLISION FACTOR
       if optimization_config.use_GP_inter and check_inter > 0:
         for j in range(1, check_inter + 1):
           tau = j * (time_sec / trajectory_config.total_check_step)
