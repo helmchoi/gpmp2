@@ -68,19 +68,19 @@ def generate2Ddataset(dataset_str, map_config):
         dataset.origin_y = map_config.origin_y
         dataset.cell_size = map_config.cell_size
         dataset.map = np.zeros((dataset.rows, dataset.cols))
-        # scenario 1
-        dataset.map = add_obstacle(get_center(12, 10, dataset),
-                                   get_dim(5, 7, dataset), dataset.map)
-        dataset.map = add_obstacle(get_center(-7, 10, dataset),
-                                   get_dim(10, 7, dataset), dataset.map)
-        dataset.map = add_obstacle(get_center(0, -5, dataset),
-                                   get_dim(10, 5, dataset), dataset.map)
-        # scenario 2
+        # - scenario 1
+        # dataset.map = add_obstacle(get_center(12, 10, dataset),
+        #                            get_dim(5, 7, dataset), dataset.map)
+        # dataset.map = add_obstacle(get_center(-7, 10, dataset),
+        #                            get_dim(10, 7, dataset), dataset.map)
+        # dataset.map = add_obstacle(get_center(0, -5, dataset),
+        #                            get_dim(10, 5, dataset), dataset.map)
+        # - scenario 2
         # dataset.map = add_obstacle(get_center(8, 10, dataset),
         #                            get_dim(15, 5, dataset), dataset.map)
         # dataset.map = add_obstacle(get_center(-10, 2, dataset),
         #                            get_dim(20, 5, dataset), dataset.map)
-        # scenario 3
+        # - scenario 3
         # dataset.map = add_obstacle(get_center(7, 4, dataset),
         #                            get_dim(5, 23, dataset), dataset.map)
         # dataset.map = add_obstacle(get_center(-7, 10, dataset),
@@ -89,6 +89,15 @@ def generate2Ddataset(dataset_str, map_config):
         #                            get_dim(8, 4, dataset), dataset.map)
         # dataset.map = add_obstacle(get_center(0, -5, dataset),
         #                            get_dim(10, 5, dataset), dataset.map)
+        # - scenario 4
+        dataset.map = add_obstacle(get_center(7, 2, dataset),
+                                   get_dim(5, 23, dataset), dataset.map)
+        dataset.map = add_obstacle(get_center(-7, 8, dataset),
+                                   get_dim(10, 7, dataset), dataset.map)
+        dataset.map = add_obstacle(get_center(11, 13, dataset),
+                                   get_dim(7, 5, dataset), dataset.map)
+        dataset.map = add_obstacle(get_center(0, -7, dataset),
+                                   get_dim(10, 5, dataset), dataset.map)
     else:
         raise NameError("No such dataset exist")
     return dataset
