@@ -13,13 +13,24 @@ from inference import inference
 if __name__ == '__main__':
     map_config = MapConfig(
         cols=100, rows=75, origin_x=-20, origin_y=-10, cell_size=0.4)
+    ## INFORMATION RELATED CONFIGS: information_sigma(30~100), gamma
     noise_config = NoiseConfig(
         QC=np.identity(2), obstacle_sigma=0.1, information_sigma=100.00,
         prior_sigma=0.001, initial_sigma=0.0000001, epsilon_dist=1.0,
         gamma=2.0)
+    
+    # original
+    # trajectory_config = TrajectoryConfig(
+    #     start_position=np.asarray([-10, -5]), end_position=np.asarray([17, 14]), delay=4,
+    #     total_time_second=10.0, total_time_step=100, total_check_step=50.0)
+    # scenario 1
     trajectory_config = TrajectoryConfig(
-        start_position=np.asarray([-10, -5]), end_position=np.asarray([17, 14]), delay=4,
+        start_position=np.asarray([-10, -5]), end_position=np.asarray([14, 14]), delay=4,
         total_time_second=10.0, total_time_step=100, total_check_step=50.0)
+    # scenario 2, 3
+    # trajectory_config = TrajectoryConfig(
+    #     start_position=np.asarray([-10, -5]), end_position=np.asarray([12, 14]), delay=4,
+    #     total_time_second=10.0, total_time_step=100, total_check_step=50.0)
     optimization_config = OptimizationConfig(
         use_GP_inter=True, use_trustregion_opt=True, use_information_factor=True)
 
